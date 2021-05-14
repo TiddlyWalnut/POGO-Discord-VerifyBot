@@ -2440,7 +2440,7 @@ function processAdminCommand(data, opts)
             return;
         }
         
-        let cat = opts.args[1].replace(/[^\w]/gi, '').toLowerCase();
+        let cat = opts.args[1].replace(/[^a-zA-Z0-9/]/gi, '').toLowerCase();
         
         if (cat == '')
         {
