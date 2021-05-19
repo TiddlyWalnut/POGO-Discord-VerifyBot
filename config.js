@@ -156,25 +156,32 @@ Config.prototype.set = function(key, value, guild){
             reject();
         }
 		
-        if (typeof this.loadedConfig[guild] !== 'undefined' && typeof this.loadedConfig[guild][key] !== 'undefined'){
-            this.loadedConfig[guild][key] = value;
-            this.save(guild);
+        // Key exists, just set and save
+        else if (typeof that.loadedConfig[guild] !== 'undefined' && typeof that.loadedConfig[guild][key] !== 'undefined'){
+            that.loadedConfig[guild][key] = value;
+            that.save(guild);
             resolve();
         }
 		
-        if (typeof this.defaultConfig[key] !== 'undefined'){
-            if (typeof this.loadedConfig[guild] !== 'object') this.loadedConfig[guild] = {};
+        // Key doesn't exist in current config, but a default exists
+        else if (typeof that.defaultConfig[key] !== 'undefined'){
+            console.log('Inserting new key ' + key + ' into database');
+            if (typeof that.loadedConfig[guild] !== 'object') 
+                that.loadedConfig[guild] = {};
 			
-            this.loadedConfig[guild][key] = value;
-            this.insertNewKey(key, value, guild)
+            that.loadedConfig[guild][key] = value;
+            that.insertNewKey(key, value, guild)
                 .then( () =>
                 {
                     resolve();
                 });
         }
+        else
+        {
 		
-        console.log('Config value ' + key + 'not found in default object');
-        reject();
+            console.log('Config value ' + key + 'not found in default object');
+            reject();
+        }
     });
 };
 
@@ -230,10 +237,12 @@ Config.prototype.load = function(){
             var temp = {};
             for (var i in rows){
                 //Create new object for guild if not already exist
-                if (typeof temp[rows[i].guild] !== 'object') temp[rows[i].guild] = {};
+                if (typeof temp[rows[i].guild] !== 'object') 
+                    temp[rows[i].guild] = {};
 				
                 // Skip rows that are no longer in default config
-                if (typeof that.defaultConfig[rows[i].key] === 'undefined') continue;
+                if (typeof that.defaultConfig[rows[i].key] === 'undefined') 
+                    continue;
 				
                 var type = that.defaultConfig[rows[i].key].type;
 				

@@ -482,12 +482,12 @@ function processUserCommand(data, opts)
 			'`'+ c + 'setign <name>` - Sets your in-game name for the `fc` command\n' +
             '     Options: `'+ c + 'setign [number] <name> - Sets that number to an alt\'ts name`\n' +
 			'`'+ c + 'fc [number]` - Lists friend code and ign in this channel, or lists an alt\'s info if number is specified\n' +
-            '`'+ c + 'wantquest <quest>` - Subscribes you to notifications for quest\n' +
+            '`'+ c + 'getrole <role>` - Adds you to a role\n' +
             '     Alias: `'+ c + 'wantq`\n' +
-			'`'+ c + 'unwantquest <quest>` - Unsubscribes you to notifications for quest\n' +
+			'`'+ c + 'removerole <quest>` - Removes you from a role\n' +
             '     Alias: `'+ c + 'unwantq`\n' +
-			'`'+ c + 'listquests` - Lists available quests\n' +
-            '     Alias: `'+ c + 'listq`\n' +
+			'`'+ c + 'rolelist` - Lists available roles\n' +
+            '     Alias: `'+ c + 'roles`\n' +
 			'`'+ c + 'numwants` - Lists how many people want that pokemon\n' +
             '     Alias: `'+ c + 'numwant`, `wantnum`\n' +
 			'`'+ c + 'listwants` - Lists people that want that pokemon\n' +
@@ -1146,7 +1146,9 @@ function processUserCommand(data, opts)
     // *******************************
     
     else if (opts.args[0] == 'wantquest' ||
-             opts.args[0] == 'wantq') // Adds user quest sub list
+             opts.args[0] == 'wantq'  ||
+             opts.args[0] == 'getrole'  ||
+             opts.args[0] == 'wantrole') // Adds user quest sub list
     {
         let cats = config.get('questCategories', opts.guild);
         let inCat = opts.args[1].toLowerCase();
@@ -1171,7 +1173,10 @@ function processUserCommand(data, opts)
     }
     
     else if (opts.args[0] == 'unwantquest' ||
-             opts.args[0] == 'unwantq') // Adds user quest sub list
+             opts.args[0] == 'unwantq'||
+             opts.args[0] == 'removerole' ||
+             opts.args[0] == 'rmrole'||
+             opts.args[0] == 'unwantrole') // Adds user quest sub list
     {
         let cats = config.get('questCategories', opts.guild);
         let inCat = opts.args[1].toLowerCase();
@@ -1212,7 +1217,9 @@ function processUserCommand(data, opts)
     }
     else if (opts.args[0] == 'listquests' ||
              opts.args[0] == 'listquest' || 
-             opts.args[0] == 'listq') // Cleans out empty roles
+             opts.args[0] == 'listq'||
+             opts.args[0] == 'roles'||
+             opts.args[0] == 'rolelist') // Cleans out empty roles
     {
         let cats = config.get('questCategories', opts.guild);
         let out = 'Available quest roles:\n';
@@ -2468,7 +2475,7 @@ function processAdminCommand(data, opts)
             return;
         }
         
-        let cat = opts.args[1].replace(/[^\w]/gi, '').toLowerCase();
+        let cat = opts.args[1].replace(/[^a-zA-Z0-9/]/gi, '').toLowerCase();
         
         if (cat == '')
         {
@@ -2498,8 +2505,8 @@ function processAdminCommand(data, opts)
             return;
         }
         
-        let cat = opts.args[1].replace(/[^\w]/gi, '');
-        let cat2 = opts.args[2].replace(/[^\w]/gi, '');
+        let cat = opts.args[1].replace(/[^a-zA-Z0-9/]/gi, '');
+        let cat2 = opts.args[2].replace(/[^a-zA-Z0-9/]/gi, '');
         
         if (cat == '' || cat2 == '')
         {
